@@ -40,7 +40,6 @@ for (let index = 0; index < dirNames.length; index++) {
 
     fs.appendFile(path.join(__dirname, "testData.txt"), txtContent, (err) => {
         if (err) throw err
-        console.log('ok')
     })  
     
    //csv and json write
