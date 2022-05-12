@@ -3,36 +3,26 @@ const path = require('path')
 const fs = require('fs')
 const dirNames = require('./data')
 const createCsvWriter = require('csv-writer').createArrayCsvWriter
+const jsonfile = require('jsonfile')
 
 const csvWriter = createCsvWriter({
-    header: ['ФИО'],
+    header: ['ФИО', 'Дата Рождения'],
     path: __dirname + "\\" + "testData.csv"
 })
 
 function fileHandlerAppend(body, message) {
-/* 
-    fs.appendFile('testFile.txt', body, (err) => {
-        if (err) throw err
-        console.log("txt" + message)
-    }) 
-*/
 
     csvWriter.writeRecords(body)     
     .then(() => {
     console.log(message)
     })
+ 
+    jsonfile.writeFile(path.join(__dirname, 'testData.json'), body)
+
 
 }
 
 const app = async () => {
-
-/*  txt
-    for (let index = 0; index < dirNames.length; index++) {
-        fileHandlerAppend(dirNames[index] +  "\r\n", 'Data has been added!')
-    } 
-*/
-
-//csv
 
 const array = []
 
@@ -44,14 +34,21 @@ for (let index = 0; index < dirNames.length; index++) {
     }) 
     array.push([dirNames[index], content]) 
 
-    /*  */
-   
+    //txt write
+
+    const txtContent = dirNames[index] + "," + content + "\r\n"
+
+    fs.appendFile(path.join(__dirname, "testData.txt"), txtContent, (err) => {
+        if (err) throw err
+        console.log('ok')
+    })  
+    
+   //csv and json write
     if(index + 1 === dirNames.length) {
         fileHandlerAppend(array, 'The data has been added to the testData.csv file')
         console.log(array)
     }
 } 
-
 }
 
 app()
